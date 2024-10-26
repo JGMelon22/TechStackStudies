@@ -12,6 +12,9 @@ builder.Services.AddSwaggerGen();
 // Validators Service Registration
 builder.Services.AddValidators();
 
+// Repositories Service Registration
+builder.Services.AddRepositories();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
