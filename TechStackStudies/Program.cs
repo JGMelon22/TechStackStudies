@@ -1,4 +1,5 @@
 using TechStackStudies.Configuration;
+using Wolverine;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register Wolverine
+builder.Host.UseWolverine();
 
 // Validators Service Registration
 builder.Services.AddValidators();
