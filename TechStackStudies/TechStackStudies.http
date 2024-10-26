@@ -1,0 +1,6 @@
+@TechStackStudies_HostAddress = http://localhost:5118
+
+GET {{TechStackStudies_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
