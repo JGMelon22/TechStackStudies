@@ -3,8 +3,8 @@ namespace TechStackStudies.Models.Enums;
 [Flags]
 public enum Category
 {
-    Frontend,
-    Backend,
-    Database,
-    Devops
+    Frontend = 1,
+    Backend = 2,
+    Database = 4 ,
+    Devops =8
 }

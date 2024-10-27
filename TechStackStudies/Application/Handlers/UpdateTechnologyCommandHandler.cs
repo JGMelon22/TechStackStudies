@@ -5,11 +5,11 @@ using TechStackStudies.Models;
 
 namespace TechStackStudies.Application.Handlers;
 
-public class UpdateTechnologyCommandHanlder
+public class UpdateTechnologyCommandHandler 
 {
     private readonly ITechnologyRepository _technologyRepository;
 
-    public UpdateTechnologyCommandHanlder(ITechnologyRepository technologyRepository)
+    public UpdateTechnologyCommandHandler(ITechnologyRepository technologyRepository)
     {
         _technologyRepository = technologyRepository;
     }

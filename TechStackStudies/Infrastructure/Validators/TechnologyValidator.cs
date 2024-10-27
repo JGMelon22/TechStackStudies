@@ -10,13 +10,13 @@ public class TechnologyValidator : AbstractValidator<TechnologyRequest>
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Technlogy Name can not be empty!")
+            .WithMessage("Technology Name can not be empty!")
             .NotNull()
-            .WithMessage("Technlogy Name can not be null!")
+            .WithMessage("Technology Name can not be null!")
             .MinimumLength(2)
-            .WithMessage("Technlogy Name must contain at least 2 characters!")
+            .WithMessage("Technology Name must contain at least 2 characters!")
             .MaximumLength(100)
-            .WithMessage("Technlogy Name can not exceed at least 100 characters!");
+            .WithMessage("Technology Name can not exceed at least 100 characters!");
 
         RuleFor(x => x.IsFrameworkOrLib)
             .NotEmpty()
@@ -30,8 +30,8 @@ public class TechnologyValidator : AbstractValidator<TechnologyRequest>
             .WithName("Technology Current Version can not be empty!")
             .NotNull()
             .WithName("Technology Current Version can not be null!")
-            .Must(curretVersion => curretVersion >= 0.0)
-            .WithMessage("Technology Current Version must be greter than 0!");
+            .Must(currentVersion => currentVersion >= 0.0)
+            .WithMessage("Technology Current Version must be greater than 0!");
 
         RuleFor(x => x.Category)
             .NotEmpty()

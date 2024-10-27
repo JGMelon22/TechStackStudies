@@ -24,7 +24,7 @@ public class TechnologiesController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddNewTechnologyAsync([FromBody] TechnologyRequest newTechnology)
     {
         ValidationResult validationResult = await _validator.ValidateAsync(newTechnology);
@@ -46,5 +46,42 @@ public class TechnologiesController : ControllerBase
         return technologies.Data != null && technologies.Data.Any()
             ? Ok(technologies)
             : NoContent();
+    }
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> GetTechnologyByIdAsync([FromRoute] int id)
+    {
+        ServiceResponse<TechnologyResponse> technology = await _messageBus.InvokeAsync<ServiceResponse<TechnologyResponse>>(new GetTechnologyByIdQuery(id));
+        return technology.Data != null
+            ? Ok(technology)
+            : NotFound(technology);
+    }
+
+    [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateTechnologyAsync([FromRoute] int id, [FromBody] TechnologyRequest updatedTechnology)
+    {
+        ValidationResult validationResult = await _validator.ValidateAsync(updatedTechnology);
+        if (!validationResult.IsValid)
+            return BadRequest(string.Join(',', validationResult.Errors));
+
+        ServiceResponse<TechnologyResponse> technology = await _messageBus.InvokeAsync<ServiceResponse<TechnologyResponse>>(new UpdateTechnologyCommand(id, updatedTechnology));
+        return technology.Data != null
+            ? Ok(technology)
+            : BadRequest(technology);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RemoveTechnologyAsync([FromRoute] int id)
+    {
+        ServiceResponse<bool> technology = await _messageBus.InvokeAsync<ServiceResponse<bool>>(new RemoveTechnologyCommand(id));
+        return technology.Success != false
+            ? NoContent()
+            : BadRequest(technology);
     }
 }

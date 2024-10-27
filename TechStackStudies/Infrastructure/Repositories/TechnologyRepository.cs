@@ -72,11 +72,11 @@ public class TechnologyRepository : ITechnologyRepository
 
         try
         {
-            Technology techonlogy = await _dbContext.Technologies
+            Technology technology = await _dbContext.Technologies
                 .FindAsync(id)
-                ?? throw new Exception($"Technology witth Id \"{id}\" not found!");
+                ?? throw new Exception($"Technology with Id \"{id}\" not found!");
 
-            serviceResponse.Data = technologyMapper.TechnologyToTechnologyResponse(techonlogy);
+            serviceResponse.Data = technologyMapper.TechnologyToTechnologyResponse(technology);
         }
         catch (Exception ex)
         {
@@ -95,7 +95,7 @@ public class TechnologyRepository : ITechnologyRepository
         {
             Technology technology = await _dbContext.Technologies
                 .FindAsync(id)
-                ?? throw new Exception($"Technology witth Id \"{id}\" not found!");
+                ?? throw new Exception($"Technology with Id \"{id}\" not found!");
 
             _dbContext.Remove(technology);
             await _dbContext.SaveChangesAsync();
@@ -118,7 +118,7 @@ public class TechnologyRepository : ITechnologyRepository
         {
             Technology technology = await _dbContext.Technologies
                 .FindAsync(id)
-                ?? throw new Exception($"Technology witth Id \"{id}\" not found!");
+                ?? throw new Exception($"Technology with Id \"{id}\" not found!");
 
             technologyMapper.ApplyUpdate(updatedTechnology, technology);
 

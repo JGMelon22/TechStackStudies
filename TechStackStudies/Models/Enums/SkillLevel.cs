@@ -2,7 +2,7 @@ namespace TechStackStudies.Models.Enums;
 
 public enum SkillLevel
 {
-    Begginer,
+    Beginner,
     Skilled,
     Expert
 }
