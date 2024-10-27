@@ -13,13 +13,27 @@
 
 ### Dependencies (NuGet Packages)
 <ul>
-    <li>FluentValidation</li>
-    <li>Microsoft.EntityFrameworkCore</li>
-    <li>Microsoft.EntityFrameworkCore.Design</li>
-    <li>Npgsql.EntityFrameworkCore.PostgreSQL</li>
-    <li><a href="https://github.com/riok/mapperly">Riok.Mapperly</a></li>
-    <li>Serilog</li>
-    <li>Serilog.Sinks.Console</li>
-    <li>Swashbuckle.AspNetCore</li>
-    <li><a href="https://github.com/JasperFx/wolverine">Wolverine</a></li>
+    <li>Base Project
+        <ul>
+            <li>FluentValidation</li>
+            <li>Microsoft.EntityFrameworkCore</li>
+            <li>Microsoft.EntityFrameworkCore.Design</li>
+            <li>Npgsql.EntityFrameworkCore.PostgreSQL</li>
+            <li><a href="https://github.com/riok/mapperly">Riok.Mapperly</a></li>
+            <li>Serilog</li>
+            <li>Serilog.Sinks.Console</li>
+            <li>Swashbuckle.AspNetCore</li>
+            <li><a href="https://github.com/JasperFx/wolverine">Wolverine</a></li>
+        </ul>
+    </li></br>
+    <li>Unit Tests
+        <ul>
+            <li>coverlet.collector</li>
+            <li>FluentAssertions</li>
+            <li>Microsoft.NET.Test.Sdk</li>
+            <li>Moq</li>
+            <li>xunit</li>
+            <li>xunit.runner.visualstudio</li>
+        </ul>
+    </li>
 </ul>
