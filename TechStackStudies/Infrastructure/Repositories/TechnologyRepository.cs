@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using TechStackStudies.DTOs;
 using TechStackStudies.Infrastructure.Data;
@@ -10,10 +11,12 @@ namespace TechStackStudies.Infrastructure.Repositories;
 public class TechnologyRepository : ITechnologyRepository
 {
     private readonly AppDbContext _dbContext;
+    private readonly ILogger<TechnologyRepository> _logger;
 
-    public TechnologyRepository(AppDbContext dbContext)
+    public TechnologyRepository(AppDbContext dbContext, ILogger<TechnologyRepository> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<ServiceResponse<TechnologyResponse>> AddTechnologyAsync(TechnologyRequest newTechnology)
@@ -48,9 +51,13 @@ public class TechnologyRepository : ITechnologyRepository
 
         try
         {
+            string methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             IEnumerable<Technology> technologies = await _dbContext.Technologies
                 .AsNoTracking()
                 .ToListAsync();
+
+            _logger.LogInformation("{MethodName} {ObjectName}: {@Technologies}", methodNameLog, nameof(technologies), technologies);
 
             IEnumerable<TechnologyResponse> technologyResponse = technologies.Select(technologyMapper.TechnologyToTechnologyResponse);
 
@@ -58,6 +65,8 @@ public class TechnologyRepository : ITechnologyRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occurred in {MethodName}: {Message}", $"{GetType().Name} -> {MethodBase.GetCurrentMethod()?.Name}", ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }
@@ -72,14 +81,20 @@ public class TechnologyRepository : ITechnologyRepository
 
         try
         {
+            string methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             Technology technology = await _dbContext.Technologies
                 .FindAsync(id)
                 ?? throw new Exception($"Technology with Id \"{id}\" not found!");
+
+            _logger.LogInformation("{MethodName} {ObjectName}: {@Technology}", methodNameLog, nameof(technology), technology);
 
             serviceResponse.Data = technologyMapper.TechnologyToTechnologyResponse(technology);
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occurred in {MethodName}: {Message}", $"{GetType().Name} -> {MethodBase.GetCurrentMethod()?.Name}", ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }
@@ -93,15 +108,21 @@ public class TechnologyRepository : ITechnologyRepository
 
         try
         {
+            string methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             Technology technology = await _dbContext.Technologies
                 .FindAsync(id)
                 ?? throw new Exception($"Technology with Id \"{id}\" not found!");
+
+            _logger.LogInformation("{MethodName} {ObjectName}: {@Technology}", methodNameLog, nameof(technology), technology);
 
             _dbContext.Remove(technology);
             await _dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occurred in {MethodName}: {Message}", $"{GetType().Name} -> {MethodBase.GetCurrentMethod()?.Name}", ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }
@@ -116,9 +137,13 @@ public class TechnologyRepository : ITechnologyRepository
 
         try
         {
+            string methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             Technology technology = await _dbContext.Technologies
                 .FindAsync(id)
                 ?? throw new Exception($"Technology with Id \"{id}\" not found!");
+
+            _logger.LogInformation("{MethodName} {ObjectName}: {@Technology}", methodNameLog, nameof(technology), technology);
 
             technologyMapper.ApplyUpdate(updatedTechnology, technology);
 
@@ -126,6 +151,8 @@ public class TechnologyRepository : ITechnologyRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occurred in {MethodName}: {Message}", $"{GetType().Name} -> {MethodBase.GetCurrentMethod()?.Name}", ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }

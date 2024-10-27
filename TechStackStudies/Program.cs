@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TechStackStudies.Configuration;
 using TechStackStudies.Infrastructure.Data;
 using Wolverine;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,10 @@ builder.Services.AddSwaggerGen();
 // DbContext Registration
 builder.Services.AddDbContext<AppDbContext>(options
     => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+// Serilog Registration
+builder.Host.UseSerilog((context, config) =>
+    config.ReadFrom.Configuration(context.Configuration));
 
 // Register Wolverine
 builder.Host.UseWolverine();
