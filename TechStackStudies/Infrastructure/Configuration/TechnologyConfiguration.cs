@@ -1,21 +1,23 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TechStackStudies.Models;
 
 namespace TechStackStudies.Infrastructure.Configuration;
 
 public class TechnologyConfiguration : IEntityTypeConfiguration<Technology>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Technology> builder)
+    public void Configure(EntityTypeBuilder<Technology> builder)
     {
         builder.ToTable("technologies");
 
         builder.HasKey(x => x.Id);
 
         builder.HasIndex(x => x.Id)
-            .HasDatabaseName("idx_technologies_id");
+            .HasDatabaseName("idx_technologies_id")
+            .IsUnique();
 
         builder.Property(x => x.Id)
-            .HasColumnType("serial")
+            .HasColumnType("int")
             .HasColumnName("technology_id")
             .ValueGeneratedOnAdd();
 
