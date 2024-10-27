@@ -9,10 +9,6 @@ public class Technology
     public string Name { get; set; } = string.Empty!;
     public bool IsFrameworkOrLib { get; set; }
     public float CurrentVersion { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public Category Category { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public SkillLevel SkillLevel { get; set; }
 }

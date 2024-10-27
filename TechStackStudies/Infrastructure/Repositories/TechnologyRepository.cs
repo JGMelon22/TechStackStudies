@@ -53,6 +53,8 @@ public class TechnologyRepository : ITechnologyRepository
                 .ToListAsync();
 
             IEnumerable<TechnologyResponse> technologyResponse = technologies.Select(technologyMapper.TechnologyToTechnologyResponse);
+
+            serviceResponse.Data = technologyResponse;
         }
         catch (Exception ex)
         {
