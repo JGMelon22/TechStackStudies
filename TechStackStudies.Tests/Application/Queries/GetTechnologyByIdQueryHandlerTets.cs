@@ -46,6 +46,7 @@ public class GetTechnologyByIdQueryHandlerTests
         result.Data.Should().NotBeNull();
         result.Success.Should().BeTrue();
         result.Message.Should().Be(string.Empty);
+
         result.Data!.Id.Should().Be(1);
         result.Data!.Name.Should().Be("Vue.js");
         result.Data!.IsFrameworkOrLib.Should().Be(true);

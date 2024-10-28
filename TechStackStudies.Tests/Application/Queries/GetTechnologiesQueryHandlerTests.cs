@@ -66,6 +66,7 @@ public class GetTechnologiesQueryHandlerTests
         result.Data.Should().NotBeNull();
         result.Data.Should().NotBeEmpty();
         result.Data!.Count().Should().Be(3);
+
         result.Success.Should().BeTrue();
         result.Message.Should().Be(string.Empty);
 
