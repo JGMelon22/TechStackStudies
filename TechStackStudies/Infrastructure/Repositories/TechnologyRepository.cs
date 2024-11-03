@@ -146,6 +146,7 @@ public class TechnologyRepository : ITechnologyRepository
             _logger.LogInformation("{MethodName} {ObjectName}: {@Technology}", methodNameLog, nameof(technology), technology);
 
             technologyMapper.ApplyUpdate(updatedTechnology, technology);
+            await _dbContext.SaveChangesAsync();
 
             serviceResponse.Data = technologyMapper.TechnologyToTechnologyResponse(technology);
         }
