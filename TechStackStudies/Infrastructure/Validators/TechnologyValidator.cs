@@ -19,8 +19,6 @@ public class TechnologyValidator : AbstractValidator<TechnologyRequest>
             .WithMessage("Technology Name can not exceed at least 100 characters!");
 
         RuleFor(x => x.IsFrameworkOrLib)
-            .NotEmpty()
-            .WithMessage("Technology Is Framework or Lib can not be empty!")
             .NotNull()
             .WithMessage("Technology Is Framework or Lib can not be null!")
             .Must(isFrameworkOrLib => isFrameworkOrLib == false || isFrameworkOrLib == true);
