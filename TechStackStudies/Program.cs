@@ -18,6 +18,8 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors();
+
 // DbContext Registration
 builder.Services.AddDbContext<AppDbContext>(options
     => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
@@ -36,6 +38,13 @@ builder.Services.AddValidators();
 builder.Services.AddRepositories();
 
 var app = builder.Build();
+
+app.UseCors(c =>
+{
+    c.WithOrigins("http://localhost:5173");
+    c.AllowAnyHeader();
+    c.AllowAnyMethod();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
