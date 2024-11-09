@@ -159,4 +159,79 @@ public class TechnologiesControllerTests
         result.Should().BeOfType<OkObjectResult>();
         serviceResponse.Data.Count().Should().Be(3);
     }
+
+    [Fact]
+    public async Task Should_ReturnSuccess_When_TechnologyToUpdateIsFoundAndValidInput()
+    {
+        // Arrange
+        Mock<IValidator<TechnologyRequest>> validator = new Mock<IValidator<TechnologyRequest>>();
+        Mock<IMessageBus> messageBus = new Mock<IMessageBus>();
+        ValidationResult validationResult = new ValidationResult();
+        TechnologiesController controller = new TechnologiesController(validator.Object, messageBus.Object);
+        TechnologyRequest updatedTechnolgy = new TechnologyRequest(
+            "Grafana",
+            false,
+            11.3F,
+            Category.Devops,
+            SkillLevel.Beginner
+        );
+
+        TechnologyResponse response = new TechnologyResponse
+        {
+            Id = 3,
+            Name = "Grafana",
+            IsFrameworkOrLib = false,
+            CurrentVersion = 11.3F,
+            Category = Category.Devops,
+            SkillLevel = SkillLevel.Beginner
+        };
+
+        ServiceResponse<TechnologyResponse> serviceResponse = new ServiceResponse<TechnologyResponse>
+        {
+            Data = response,
+            Success = true,
+            Message = string.Empty
+        };
+
+        validator
+            .Setup(x => x.ValidateAsync(updatedTechnolgy, default))
+            .ReturnsAsync(validationResult);
+
+        messageBus
+            .Setup(x => x.InvokeAsync<ServiceResponse<TechnologyResponse>>(It.Is<UpdateTechnologyCommand>(cmd => cmd.Id == 3 && cmd.UpdatedTechnology == updatedTechnolgy), default, null))
+            .ReturnsAsync(serviceResponse);
+
+        // Act
+        IActionResult result = await controller.UpdateTechnologyAsync(3, updatedTechnolgy);
+
+        // Assett
+        result.Should().NotBeNull();
+        result.Should().BeOfType<OkObjectResult>();
+        serviceResponse.Data.Should().Be(response);
+    }
+
+    [Fact]
+    public async Task Should_ReturnSuccess_WhenTechnologyIdIsFound()
+    {
+        // Arrange
+        Mock<IValidator<TechnologyRequest>> validator = new Mock<IValidator<TechnologyRequest>>();
+        Mock<IMessageBus> messageBus = new Mock<IMessageBus>();
+        TechnologiesController controller = new TechnologiesController(validator.Object, messageBus.Object);
+
+        ServiceResponse<bool> serviceResponse = new ServiceResponse<bool>
+        {
+            Success = true,
+            Message = string.Empty
+        };
+
+        messageBus
+            .Setup(x => x.InvokeAsync<ServiceResponse<bool>>(It.Is<RemoveTechnologyCommand>(qry => qry.Id == 3), default, null))
+            .ReturnsAsync(serviceResponse);
+        // Act
+        IActionResult result = await controller.RemoveTechnologyAsync(3);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<NoContentResult>();
+    }
 }
