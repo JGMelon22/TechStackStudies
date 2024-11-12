@@ -211,7 +211,7 @@ public class TechnologiesControllerTests
     }
 
     [Fact]
-    public async Task Should_ReturnSuccess_WhenTechnologyIdIsFound()
+    public async Task Should_ReturnSuccess_When_TechnologyToBeRemovedIsFound()
     {
         // Arrange
         Mock<IValidator<TechnologyRequest>> validator = new Mock<IValidator<TechnologyRequest>>();
@@ -227,6 +227,7 @@ public class TechnologiesControllerTests
         messageBus
             .Setup(x => x.InvokeAsync<ServiceResponse<bool>>(It.Is<RemoveTechnologyCommand>(qry => qry.Id == 3), default, null))
             .ReturnsAsync(serviceResponse);
+
         // Act
         IActionResult result = await controller.RemoveTechnologyAsync(3);
 

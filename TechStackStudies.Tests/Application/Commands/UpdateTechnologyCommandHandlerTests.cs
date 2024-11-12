@@ -62,7 +62,7 @@ public class UpdateTechnologyCommandHandlerTests
         result.Data!.Category.Should().Be(Category.Database);
         result.Data!.SkillLevel.Should().Be(SkillLevel.Beginner);
 
-        // result.Data.Should().BeSameAs(postUpdatedResponse);
+        result.Data.Should().BeSameAs(postUpdatedResponse);
 
         technologyRepository.Verify(x => x.UpdateTechnologyAsync(1, updatedTechnology), Times.Once);
     }
