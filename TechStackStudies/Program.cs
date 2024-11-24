@@ -29,7 +29,11 @@ builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration));
 
 // Register Wolverine
-builder.Host.UseWolverine();
+builder.Host.UseWolverine(opts =>
+{
+    opts.Policies.MessageExecutionLogLevel(LogLevel.None);
+    opts.Policies.MessageSuccessLogLevel(LogLevel.Debug);
+});
 
 // Validators Service Registration
 builder.Services.AddValidators();
