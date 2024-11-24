@@ -26,10 +26,14 @@ public class TechnologyRepository : ITechnologyRepository
 
         try
         {
+            string methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             Technology technology = technologyMapper.TechnologyRequestToTechnology(newTechnology);
 
             await _dbContext.Technologies.AddAsync(technology);
             await _dbContext.SaveChangesAsync();
+
+            _logger.LogInformation("{MethodName} {ObjectName}: {@Technology}", methodNameLog, nameof(technology), technology);
 
             TechnologyResponse technologyResponse = technologyMapper.TechnologyToTechnologyResponse(technology);
 
