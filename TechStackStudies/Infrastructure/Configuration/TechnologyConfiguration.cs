@@ -32,6 +32,11 @@ public class TechnologyConfiguration : IEntityTypeConfiguration<Technology>
             .HasColumnName("is_framework_or_lib")
             .IsRequired();
 
+        builder.Property(x => x.CurrentVersion)
+            .HasColumnType("real")
+            .HasColumnName("current_version")
+            .IsRequired();
+
         builder.Property(x => x.Category)
             .HasColumnType("varchar")
             .HasColumnName("category")
