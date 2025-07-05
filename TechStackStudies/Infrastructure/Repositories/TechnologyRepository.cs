@@ -94,7 +94,7 @@ public class TechnologyRepository : ITechnologyRepository
 
     public async Task<ServiceResponse<bool>> RemoveTechnologyAsync(int id)
     {
-        ServiceResponse<bool> serviceResponse = new ServiceResponse<bool>();
+        ServiceResponse<bool> serviceResponse = new();
 
         try
         {
