@@ -1,5 +1,6 @@
 using TechStackStudies.Application.Queries;
 using TechStackStudies.DTOs;
+using TechStackStudies.Infrastructure.Mappers;
 using TechStackStudies.Interfaces;
 using TechStackStudies.Models;
 
@@ -15,5 +16,14 @@ public class GetTechnologyByIdQueryHandler
     }
 
     public async Task<ServiceResponse<TechnologyResponse>> Handle(GetTechnologyByIdQuery query)
-        => await _technologyRepository.GetTechnologyByIdAsync(query.Id);
+    {
+        ServiceResponse<Technology> result = await _technologyRepository.GetTechnologyByIdAsync(query.Id);
+
+        return new ServiceResponse<TechnologyResponse>
+        {
+            Success = result.Success,
+            Message = result.Message,
+            Data = TechnologyMapper.ToResponse(result.Data!)
+        };
+    }
 }

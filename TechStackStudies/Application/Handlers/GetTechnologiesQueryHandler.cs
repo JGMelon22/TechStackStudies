@@ -1,5 +1,6 @@
 using TechStackStudies.Application.Queries;
 using TechStackStudies.DTOs;
+using TechStackStudies.Infrastructure.Mappers;
 using TechStackStudies.Interfaces;
 using TechStackStudies.Models;
 
@@ -15,5 +16,14 @@ public class GetTechnologiesQueryHandler
     }
 
     public async Task<ServiceResponse<IEnumerable<TechnologyResponse>>> Handle(GetTechnologiesQuery query)
-        => await _technologyRepository.GetAllTechnologiesAsync();
+    {
+        ServiceResponse<IEnumerable<Technology>> result = await _technologyRepository.GetAllTechnologiesAsync();
+
+        return new ServiceResponse<IEnumerable<TechnologyResponse>>
+        {
+            Success = result.Success,
+            Message = result.Message,
+            Data = TechnologyMapper.ToResponse(result.Data!)
+        };
+    }
 }

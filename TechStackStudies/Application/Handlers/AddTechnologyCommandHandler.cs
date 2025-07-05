@@ -1,5 +1,5 @@
 using TechStackStudies.Application.Commands;
-using TechStackStudies.DTOs;
+using TechStackStudies.Infrastructure.Mappers;
 using TechStackStudies.Interfaces;
 using TechStackStudies.Models;
 
@@ -14,6 +14,16 @@ public class AddTechnologyCommandHandler
         _technologyRepository = technologyRepository;
     }
 
-    public async Task<ServiceResponse<TechnologyResponse>> Handle(AddTechnologyCommand command)
-        => await _technologyRepository.AddTechnologyAsync(command.NewTechnology);
+    public async Task<ServiceResponse<bool>> Handle(AddTechnologyCommand command)
+    {
+        Technology technology = TechnologyMapper.ToDomain(command.NewTechnology);
+        ServiceResponse<bool> result = await _technologyRepository.AddTechnologyAsync(technology);
+
+        return new ServiceResponse<bool>
+        {
+            Success = result.Success,
+            Message = result.Message,
+            Data = result.Data
+        };
+    }
 }

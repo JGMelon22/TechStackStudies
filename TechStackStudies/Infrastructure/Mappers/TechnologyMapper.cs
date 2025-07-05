@@ -5,9 +5,9 @@ using TechStackStudies.Models;
 namespace TechStackStudies.Infrastructure.Mappers;
 
 [Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName)]
-public partial class TechnologyMapper
+public static partial class TechnologyMapper
 {
-    public partial Technology ToDomain(TechnologyRequest technology);
-    public partial TechnologyResponse ToResponse(Technology technology);
-    public partial IEnumerable<TechnologyResponse> ToResponse(IEnumerable<Technology> technology);
+    public static partial Technology ToDomain(TechnologyRequest technology);
+    public static partial TechnologyResponse ToResponse(Technology technology);
+    public static partial IEnumerable<TechnologyResponse> ToResponse(IEnumerable<Technology> technology);
 }
