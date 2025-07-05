@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using TechStackStudies.Models.Enums;
 
 namespace TechStackStudies.Models;

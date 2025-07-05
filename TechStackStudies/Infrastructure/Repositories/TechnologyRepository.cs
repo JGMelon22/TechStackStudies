@@ -1,8 +1,6 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using TechStackStudies.DTOs;
 using TechStackStudies.Infrastructure.Data;
-using TechStackStudies.Infrastructure.Mappers;
 using TechStackStudies.Interfaces;
 using TechStackStudies.Models;
 
@@ -19,21 +17,17 @@ public class TechnologyRepository : ITechnologyRepository
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<TechnologyResponse>> AddTechnologyAsync(TechnologyRequest newTechnology)
+    public async Task<ServiceResponse<bool>> AddTechnologyAsync(Technology newTechnology)
     {
-        ServiceResponse<TechnologyResponse> serviceResponse = new ServiceResponse<TechnologyResponse>();
-        TechnologyMapper technologyMapper = new TechnologyMapper();
+        ServiceResponse<bool> serviceResponse = new();
 
         try
         {
-            Technology technology = technologyMapper.TechnologyRequestToTechnology(newTechnology);
-
-            await _dbContext.Technologies.AddAsync(technology);
+            await _dbContext.Technologies.AddAsync(newTechnology);
             await _dbContext.SaveChangesAsync();
 
-            TechnologyResponse technologyResponse = technologyMapper.TechnologyToTechnologyResponse(technology);
+            serviceResponse.Data = true;
 
-            serviceResponse.Data = technologyResponse;
         }
         catch (Exception ex)
         {
@@ -44,10 +38,9 @@ public class TechnologyRepository : ITechnologyRepository
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<IEnumerable<TechnologyResponse>>> GetAllTechnologiesAsync()
+    public async Task<ServiceResponse<IEnumerable<Technology>>> GetAllTechnologiesAsync()
     {
-        ServiceResponse<IEnumerable<TechnologyResponse>> serviceResponse = new ServiceResponse<IEnumerable<TechnologyResponse>>();
-        TechnologyMapper technologyMapper = new TechnologyMapper();
+        ServiceResponse<IEnumerable<Technology>> serviceResponse = new();
 
         try
         {
@@ -55,13 +48,11 @@ public class TechnologyRepository : ITechnologyRepository
 
             IEnumerable<Technology> technologies = await _dbContext.Technologies
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync() ?? [];
 
             _logger.LogInformation("{MethodName} {ObjectName}: {@Technologies}", methodNameLog, nameof(technologies), technologies);
 
-            IEnumerable<TechnologyResponse> technologyResponse = technologies.Select(technologyMapper.TechnologyToTechnologyResponse);
-
-            serviceResponse.Data = technologyResponse;
+            serviceResponse.Data = technologies;
         }
         catch (Exception ex)
         {
@@ -74,10 +65,9 @@ public class TechnologyRepository : ITechnologyRepository
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<TechnologyResponse>> GetTechnologyByIdAsync(int id)
+    public async Task<ServiceResponse<Technology>> GetTechnologyByIdAsync(int id)
     {
-        ServiceResponse<TechnologyResponse> serviceResponse = new ServiceResponse<TechnologyResponse>();
-        TechnologyMapper technologyMapper = new TechnologyMapper();
+        ServiceResponse<Technology> serviceResponse = new();
 
         try
         {
@@ -89,7 +79,7 @@ public class TechnologyRepository : ITechnologyRepository
 
             _logger.LogInformation("{MethodName} {ObjectName}: {@Technology}", methodNameLog, nameof(technology), technology);
 
-            serviceResponse.Data = technologyMapper.TechnologyToTechnologyResponse(technology);
+            serviceResponse.Data = technology;
         }
         catch (Exception ex)
         {
@@ -104,7 +94,7 @@ public class TechnologyRepository : ITechnologyRepository
 
     public async Task<ServiceResponse<bool>> RemoveTechnologyAsync(int id)
     {
-        ServiceResponse<bool> serviceResponse = new ServiceResponse<bool>();
+        ServiceResponse<bool> serviceResponse = new();
 
         try
         {
@@ -130,10 +120,9 @@ public class TechnologyRepository : ITechnologyRepository
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<TechnologyResponse>> UpdateTechnologyAsync(int id, TechnologyRequest updatedTechnology)
+    public async Task<ServiceResponse<bool>> UpdateTechnologyAsync(int id, Technology updatedTechnology)
     {
-        ServiceResponse<TechnologyResponse> serviceResponse = new ServiceResponse<TechnologyResponse>();
-        TechnologyMapper technologyMapper = new TechnologyMapper();
+        ServiceResponse<bool> serviceResponse = new();
 
         try
         {
@@ -143,11 +132,17 @@ public class TechnologyRepository : ITechnologyRepository
                 .FindAsync(id)
                 ?? throw new Exception($"Technology with Id \"{id}\" not found!");
 
+            technology.Name = updatedTechnology.Name;
+            technology.IsFrameworkOrLib = updatedTechnology.IsFrameworkOrLib;
+            technology.CurrentVersion = updatedTechnology.CurrentVersion;
+            technology.Category = updatedTechnology.Category;
+            technology.SkillLevel = updatedTechnology.SkillLevel;
+
+            await _dbContext.SaveChangesAsync();
+
             _logger.LogInformation("{MethodName} {ObjectName}: {@Technology}", methodNameLog, nameof(technology), technology);
 
-            technologyMapper.ApplyUpdate(updatedTechnology, technology);
-
-            serviceResponse.Data = technologyMapper.TechnologyToTechnologyResponse(technology);
+            serviceResponse.Data = true;
         }
         catch (Exception ex)
         {

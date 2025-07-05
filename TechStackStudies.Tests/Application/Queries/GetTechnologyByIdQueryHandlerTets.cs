@@ -15,10 +15,10 @@ public class GetTechnologyByIdQueryHandlerTests
     public async Task Should_ReturnSingleTechnology_When_ThereIsResult()
     {
         // Arrange
-        Mock<ITechnologyRepository> technologyRepository = new Mock<ITechnologyRepository>();
-        GetTechnologyByIdQuery query = new GetTechnologyByIdQuery(1);
-        GetTechnologyByIdQueryHandler handler = new GetTechnologyByIdQueryHandler(technologyRepository.Object);
-        TechnologyResponse technology = new TechnologyResponse()
+        Mock<ITechnologyRepository> technologyRepository = new();
+        GetTechnologyByIdQuery query = new(1);
+        GetTechnologyByIdQueryHandler handler = new(technologyRepository.Object);
+        Technology technology = new()
         {
             Id = 1,
             Name = "Vue.js",
@@ -28,7 +28,7 @@ public class GetTechnologyByIdQueryHandlerTests
             SkillLevel = SkillLevel.Beginner
         };
 
-        ServiceResponse<TechnologyResponse> serviceResponse = new ServiceResponse<TechnologyResponse>
+        ServiceResponse<Technology> serviceResponse = new()
         {
             Data = technology,
             Success = true,

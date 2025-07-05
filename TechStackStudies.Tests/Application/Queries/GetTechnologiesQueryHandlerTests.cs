@@ -18,7 +18,7 @@ public class GetTechnologiesQueryHandlerTests
         Mock<ITechnologyRepository> technologyRepository = new Mock<ITechnologyRepository>();
         GetTechnologiesQuery query = new GetTechnologiesQuery();
         GetTechnologiesQueryHandler handler = new GetTechnologiesQueryHandler(technologyRepository.Object);
-        IEnumerable<TechnologyResponse> technologies = new List<TechnologyResponse>
+        IEnumerable<Technology> technologies = new List<Technology>
         {
             new ()
             {
@@ -48,7 +48,7 @@ public class GetTechnologiesQueryHandlerTests
                 SkillLevel = SkillLevel.Beginner
             }
         };
-        ServiceResponse<IEnumerable<TechnologyResponse>> serviceResponse = new ServiceResponse<IEnumerable<TechnologyResponse>>
+        ServiceResponse<IEnumerable<Technology>> serviceResponse = new()
         {
             Data = technologies,
             Success = true,
