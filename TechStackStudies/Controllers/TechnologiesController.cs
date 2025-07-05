@@ -31,8 +31,8 @@ public class TechnologiesController : ControllerBase
         if (!validationResult.IsValid)
             return BadRequest(string.Join(',', validationResult.Errors));
 
-        ServiceResponse<TechnologyResponse> technology = await _messageBus.InvokeAsync<ServiceResponse<TechnologyResponse>>(new AddTechnologyCommand(newTechnology));
-        return technology.Data != null
+        ServiceResponse<bool> technology = await _messageBus.InvokeAsync<ServiceResponse<bool>>(new AddTechnologyCommand(newTechnology));
+        return technology.Data != false
             ? Ok(technology)
             : BadRequest(technology);
     }
@@ -68,8 +68,8 @@ public class TechnologiesController : ControllerBase
         if (!validationResult.IsValid)
             return BadRequest(string.Join(',', validationResult.Errors));
 
-        ServiceResponse<TechnologyResponse> technology = await _messageBus.InvokeAsync<ServiceResponse<TechnologyResponse>>(new UpdateTechnologyCommand(id, updatedTechnology));
-        return technology.Data != null
+        ServiceResponse<bool> technology = await _messageBus.InvokeAsync<ServiceResponse<bool>>(new UpdateTechnologyCommand(id, updatedTechnology));
+        return technology.Success != false
             ? Ok(technology)
             : BadRequest(technology);
     }

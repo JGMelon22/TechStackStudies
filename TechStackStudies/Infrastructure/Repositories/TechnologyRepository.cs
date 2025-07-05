@@ -26,6 +26,8 @@ public class TechnologyRepository : ITechnologyRepository
             await _dbContext.Technologies.AddAsync(newTechnology);
             await _dbContext.SaveChangesAsync();
 
+            serviceResponse.Data = true;
+
         }
         catch (Exception ex)
         {
