@@ -28,32 +28,24 @@ public class AddTechnologyCommandHandlerTests
             Category = Category.Backend,
             SkillLevel = SkillLevel.Beginner
         };
-        ServiceResponse<TechnologyResponse> serviceResponse = new ServiceResponse<TechnologyResponse>
+        ServiceResponse<bool> serviceResponse = new()
         {
-            Data = includedTechnolgy,
+            Data = true,
             Success = true,
             Message = string.Empty
         };
 
         technologyRepository
-            .Setup(x => x.AddTechnologyAsync(newTechnology))
+            .Setup(x => x.AddTechnologyAsync(It.IsAny<Technology>()))
             .ReturnsAsync(serviceResponse);
 
         // Act
-        ServiceResponse<TechnologyResponse> result = await handler.Handle(command);
+        ServiceResponse<bool> result = await handler.Handle(command);
 
         // Assert
-        result.Data.Should().NotBeNull();
         result.Success.Should().BeTrue();
         result.Message.Should().Be(string.Empty);
 
-        result.Data!.Id.Should().Be(1);
-        result.Data!.Name.Should().Be("PHP");
-        result.Data!.IsFrameworkOrLib.Should().Be(false);
-        result.Data!.CurrentVersion.Should().Be(8.3F);
-        result.Data!.Category.Should().Be(Category.Backend);
-        result.Data!.SkillLevel.Should().Be(SkillLevel.Beginner);
-
-        technologyRepository.Verify(x => x.AddTechnologyAsync(newTechnology), Times.Once);
+        technologyRepository.Verify(x => x.AddTechnologyAsync(It.IsAny<Technology>()), Times.Once);
     }
 }

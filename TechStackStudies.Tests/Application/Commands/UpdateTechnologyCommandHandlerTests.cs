@@ -36,34 +36,24 @@ public class UpdateTechnologyCommandHandlerTests
             Category = updatedTechnology.Category,
             SkillLevel = updatedTechnology.SkillLevel
         };
-        ServiceResponse<TechnologyResponse> serviceResponse = new ServiceResponse<TechnologyResponse>
+        ServiceResponse<bool> serviceResponse = new()
         {
-            Data = postUpdatedResponse,
+            Data = true,
             Success = true,
             Message = string.Empty
         };
 
         technologyRepository
-            .Setup(x => x.UpdateTechnologyAsync(1, updatedTechnology))
+            .Setup(x => x.UpdateTechnologyAsync(1, It.IsAny<Technology>()))
             .ReturnsAsync(serviceResponse);
 
         // Act
-        ServiceResponse<TechnologyResponse> result = await handler.Handle(command);
+        ServiceResponse<bool> result = await handler.Handle(command);
 
         // Assert
-        result.Data.Should().NotBeNull();
         result.Success.Should().BeTrue();
         result.Message.Should().Be(string.Empty);
 
-        result.Data!.Id.Should().Be(1);
-        result.Data!.Name.Should().Be("MongoDB");
-        result.Data!.IsFrameworkOrLib.Should().Be(false);
-        result.Data!.CurrentVersion.Should().Be(8.0F);
-        result.Data!.Category.Should().Be(Category.Database);
-        result.Data!.SkillLevel.Should().Be(SkillLevel.Beginner);
-
-        // result.Data.Should().BeSameAs(postUpdatedResponse);
-
-        technologyRepository.Verify(x => x.UpdateTechnologyAsync(1, updatedTechnology), Times.Once);
+        technologyRepository.Verify(x => x.UpdateTechnologyAsync(1, It.IsAny<Technology>()), Times.Once);
     }
 }
