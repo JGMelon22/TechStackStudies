@@ -15,11 +15,11 @@ public class GetTechnologiesQueryHandler
         _technologyRepository = technologyRepository;
     }
 
-    public async Task<ServiceResponse<IEnumerable<TechnologyResponse>>> Handle(GetTechnologiesQuery query)
+    public async Task<ServiceResponse<PagedResponseOffset<TechnologyResponse>>> Handle(GetTechnologiesQuery query)
     {
-        ServiceResponse<IEnumerable<Technology>> result = await _technologyRepository.GetAllTechnologiesAsync();
+        ServiceResponse<PagedResponseOffset<Technology>> result = await _technologyRepository.GetAllTechnologiesAsync(query.PageNumber, query.PageSize);
 
-        return new ServiceResponse<IEnumerable<TechnologyResponse>>
+        return new ServiceResponse<PagedResponseOffset<TechnologyResponse>>
         {
             Success = result.Success,
             Message = result.Message,

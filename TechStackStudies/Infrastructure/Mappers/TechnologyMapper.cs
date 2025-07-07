@@ -9,7 +9,8 @@ public static partial class TechnologyMapper
 {
     [MapperIgnoreTarget(nameof(Technology.Id))]
     public static partial Technology ToDomain(TechnologyRequest technology);
-    
+
     public static partial TechnologyResponse ToResponse(Technology technology);
     public static partial IEnumerable<TechnologyResponse> ToResponse(IEnumerable<Technology> technology);
+    public static partial PagedResponseOffset<TechnologyResponse> ToResponse(PagedResponseOffset<Technology> technology);
 }

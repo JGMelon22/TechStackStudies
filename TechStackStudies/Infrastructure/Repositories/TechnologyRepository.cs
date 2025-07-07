@@ -38,21 +38,32 @@ public class TechnologyRepository : ITechnologyRepository
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<IEnumerable<Technology>>> GetAllTechnologiesAsync()
+    public async Task<ServiceResponse<PagedResponseOffset<Technology>>> GetAllTechnologiesAsync(int pageNumber = 1, int pageSize = 10)
     {
-        ServiceResponse<IEnumerable<Technology>> serviceResponse = new();
+        ServiceResponse<PagedResponseOffset<Technology>> serviceResponse = new();
 
         try
         {
             string methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
 
-            IEnumerable<Technology> technologies = await _dbContext.Technologies
+            int skip = (pageNumber - 1) * pageSize;
+
+            int totalRecords = await _dbContext.Technologies
+                                                .AsNoTracking()
+                                                .CountAsync();
+
+            List<Technology> technologies = await _dbContext.Technologies
                 .AsNoTracking()
+                .OrderBy(x => x.Id)
+                .Skip(skip)
+                .Take(pageSize)
                 .ToListAsync() ?? [];
+
+            PagedResponseOffset<Technology> result = new(technologies, pageNumber, pageSize, totalRecords);
 
             _logger.LogInformation("{MethodName} {ObjectName}: {@Technologies}", methodNameLog, nameof(technologies), technologies);
 
-            serviceResponse.Data = technologies;
+            serviceResponse.Data = result;
         }
         catch (Exception ex)
         {

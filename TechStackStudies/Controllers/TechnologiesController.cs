@@ -40,12 +40,16 @@ public class TechnologiesController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> GetAllTechnologiesAsync()
+    public async Task<IActionResult> GetAllTechnologiesAsync([FromQuery] int pageNumber = 1,
+    [FromQuery] int pageSize = 10)
     {
-        ServiceResponse<IEnumerable<TechnologyResponse>> technologies = await _messageBus.InvokeAsync<ServiceResponse<IEnumerable<TechnologyResponse>>>(new GetTechnologiesQuery());
-        return technologies.Data != null && technologies.Data.Any()
-            ? Ok(technologies)
-            : NoContent();
+        ServiceResponse<PagedResponseOffset<TechnologyResponse>> technologies =
+            await _messageBus.InvokeAsync<ServiceResponse<PagedResponseOffset<TechnologyResponse>>>(
+                new GetTechnologiesQuery(pageNumber, pageSize));
+
+        return technologies.Data != null && technologies.Data.Data.Any()
+          ? Ok(technologies)
+          : NoContent();
     }
 
     [HttpGet("{id}")]

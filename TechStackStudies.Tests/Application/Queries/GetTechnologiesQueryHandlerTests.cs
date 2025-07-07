@@ -16,9 +16,11 @@ public class GetTechnologiesQueryHandlerTests
     {
         // Arrange
         Mock<ITechnologyRepository> technologyRepository = new Mock<ITechnologyRepository>();
-        GetTechnologiesQuery query = new GetTechnologiesQuery();
+
+        GetTechnologiesQuery query = new GetTechnologiesQuery(1, 10);
+
         GetTechnologiesQueryHandler handler = new GetTechnologiesQueryHandler(technologyRepository.Object);
-        IEnumerable<Technology> technologies = new List<Technology>
+        List<Technology> technologyList = new List<Technology>
         {
             new ()
             {
@@ -26,8 +28,8 @@ public class GetTechnologiesQueryHandlerTests
                 Name = ".NET",
                 IsFrameworkOrLib = true,
                 CurrentVersion = 9.0F,
-                Category = Models.Enums.Category.Backend,
-                SkillLevel = Models.Enums.SkillLevel.Skilled
+                Category = Category.Backend,
+                SkillLevel = SkillLevel.Skilled
             },
             new ()
             {
@@ -35,8 +37,8 @@ public class GetTechnologiesQueryHandlerTests
                 Name = "SQL Server",
                 IsFrameworkOrLib = false,
                 CurrentVersion = 2022,
-                Category = Models.Enums.Category.Database,
-                SkillLevel = Models.Enums.SkillLevel.Skilled
+                Category = Category.Database,
+                SkillLevel = SkillLevel.Skilled
             },
             new ()
             {
@@ -48,7 +50,15 @@ public class GetTechnologiesQueryHandlerTests
                 SkillLevel = SkillLevel.Beginner
             }
         };
-        ServiceResponse<IEnumerable<Technology>> serviceResponse = new()
+
+        PagedResponseOffset<Technology> technologies = new(
+            technologyList,
+            pageNumber: 1,
+            pageSize: 10,
+            totalRecords: 3
+        );
+
+        ServiceResponse<PagedResponseOffset<Technology>> serviceResponse = new()
         {
             Data = technologies,
             Success = true,
@@ -56,20 +66,20 @@ public class GetTechnologiesQueryHandlerTests
         };
 
         technologyRepository
-            .Setup(x => x.GetAllTechnologiesAsync())
+            .Setup(x => x.GetAllTechnologiesAsync(1, 10))
             .ReturnsAsync(serviceResponse);
-
+            
         // Act
-        ServiceResponse<IEnumerable<TechnologyResponse>> result = await handler.Handle(query);
+        ServiceResponse<PagedResponseOffset<TechnologyResponse>> result = await handler.Handle(query);
 
         // Assert
         result.Data.Should().NotBeNull();
-        result.Data.Should().NotBeEmpty();
-        result.Data!.Count().Should().Be(3);
+        result.Data.Data.Should().NotBeEmpty(); // .Data.Data to access the actual collection
+        result.Data.Data.Should().HaveCount(3);
 
         result.Success.Should().BeTrue();
         result.Message.Should().Be(string.Empty);
 
-        technologyRepository.Verify(x => x.GetAllTechnologiesAsync(), Times.Once);
+        technologyRepository.Verify(x => x.GetAllTechnologiesAsync(1, 10), Times.Once);
     }
 }
